@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <modules>
+        <Twindom_Twindash>
+            <version>0.0.1</version>
+        </Twindom_Twindash>
+    </modules>
+
+    <global>
+
+        <models>
+            <twindom_twindash>
+                <class>Twindom_Twindash_Model</class>
+            </twindom_twindash>
+        </models>
+
+        <blocks>
+            <twindom_twindash>
+                <class>Twindom_Twindash_Block</class>
+            </twindom_twindash>
+
+            <adminhtml>
+                <rewrite>
+                    <dashboard>Twindom_Twindash_Block_Dashboard</dashboard>
+                </rewrite>
+            </adminhtml>
+        </blocks>
+        
+    </global>
+
+    <admin>
+
+        <routers>
+            <twindash>
+                <use>admin</use>
+                <args>
+                    <module>Twindom_Twindash</module>
+                    <frontName>twindash</frontName>
+                </args>
+            </twindash>
+        </routers>
+        
+    </admin>
+
+</config>
