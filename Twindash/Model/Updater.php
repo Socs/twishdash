@@ -52,8 +52,8 @@ class Twindom_Twindash_Model_Updater extends Twindom_Twindash_Block_Dashboard_Bo
                         $adminUserCollection[] = $adminUser['user_id'];
                     }
                 }
-                $index++;
             }
+            $index++;
             $postedDate = new DateTime($date['end']);
             $postedDate = $postedDate->format('Y-m-d');
             $adminUsersCount[]= array($postedDate, count($adminUserCollection));
