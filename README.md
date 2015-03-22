@@ -1,4 +1,4 @@
-# twishdash
+# Twindash
 A magento module for a spiffy dashboard
 
 ## Contents
