@@ -1,0 +1,444 @@
+<style>
+    /* TODO: CSS needs to be moved into a file */
+    .group:before,
+    .group:after {
+        content: "";
+        display: table;
+    } 
+    .group:after {
+        clear: both;
+    }
+    .demo-notice { display: none; }
+    .header, .footer {
+        background: #EC008C;
+        color: #FFF;
+        max-height: 5px;
+        overflow: hidden;
+        box-shadow: 0 0 5px #76736F;
+        margin-bottom: 5px;
+        transition: max-height 1s ease-out;
+    }
+    .header:hover, .footer:hover {
+        max-height: 500px;
+        overflow: visible;
+    }
+    .header a, .footer a {
+        color: #FFF;
+    }
+    .header-top { border-bottom: 7px solid #FFD247; }
+    .header-top > a:before {
+        content: url(/skin/adminhtml/default/default/images/twinlogo.png);
+        visibility: visible;
+        float: left;
+        margin-left: 30px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .header-top > a:after {
+        content: 'Twindom Dashboard';
+        color: #FFF;
+        text-transform: uppercase;
+        float: left;
+        margin-top: 17px;
+        font-size: 20px;
+        padding-left: 20px;
+    }
+    .logo {
+        visibility: hidden;
+        width: 0;
+        margin: 0;
+    }
+    .header-right { padding-top: 17px; }
+    .nav-bar {
+        border: none;
+        background: #FFF;
+    }
+    #nav li.active { background: #4FD5F7; }
+    #nav a {
+        text-transform: uppercase;
+        color: #2F2F2F;
+    }
+    #nav li.over a { color: #4FD5F7; }
+    #nav li.active a { color: #FFF; }
+    #nav ul li a { background: #FFF; }
+    #nav ul li a:hover {
+      background: #EC008C;
+      color: #FFF !important;
+    }
+    #page-help-link { color: #2f2f2f; }
+    #page-help-link:hover { color: #4FD5F7; }
+    .footer {
+        padding: .5em 2.8em 0;
+        box-sizing: border-box;
+        margin-bottom: 0;
+    }
+    .middle {
+        background: #E7E3DC;
+        padding: 18px 27px 0 27px
+    }
+    .dashboard-container { border: none; }
+    .col-2 {
+        width: 49.5%;
+        float: left;
+    }
+    .col-2:not(:last-child) { margin-right: 1%; }
+    .entry-edit, .filters {
+        box-shadow: 0 0 5px #76736F;
+        margin-bottom: 1.4em;
+    }
+    .entry-edit .entry-edit-body {
+        background: #FFF;
+        border: none;
+        margin-bottom: 0;
+        padding: 10px 15px;
+        border-radius: 0 0 4px 4px;
+    }
+    .entry-edit .entry-edit-head, .filters {
+        background: #FFF;
+        padding: 1.1em 1em;
+        border-bottom: 4px solid #F0F0EF;
+        border-radius: 4px 4px 0 0;
+    }
+    .entry-edit .entry-edit-head h4 {
+        color: #EC008C;
+        font-size: 1.2em;
+        text-transform: uppercase;
+        width: 70%;
+    }
+    .entry-edit-head h4 .label {
+        width: 52%;
+        display: inline-block;
+    }
+    .main-kpi {
+        font-size: 2.6em;
+        font-weight: bold;
+        vertical-align: middle;
+        color: #2F2F2F;
+    }
+    .filters {
+        border-bottom: 0;
+        border-radius: 4px;
+    }
+    .filters h2 { 
+        margin-bottom: 0;
+        display: inline-block;
+        text-transform: capitalize;
+    }
+    .filters label {
+        display: inline-block;
+        font-size: 14px;
+        font-weight: normal;
+        opacity: 0;
+        transition: opacity .5s ease-in;
+    }
+    .filters input { height: 20px; }
+    .filters h2:hover label { opacity: 1; }
+    .refresh {
+        float: right;
+        font-size: 18px;
+        background: #4FD5F7;
+        border: none;
+    }
+    .refresh:hover, .refresh:active {
+        background: #40B4D2;
+        border: none;
+    }
+    .refresh span { display: inline-block; }
+    .refresh:hover span {
+        -webkit-animation: spinit 4s linear 0s infinite;
+           -moz-animation: spinit 4s linear 0s infinite;
+                animation: spinit 4s linear 0s infinite;
+    }
+    .chart { float: left; }
+    .past-data {
+      float: left;
+      margin-left: 20px;
+      font-size: 14px;
+      line-height: 1.5em;
+    }
+    .past-data .date {
+        color: #888;
+        width: 85px;
+        display: inline-block;
+    }
+    .past-data .ammount {
+        margin: 0 20px;
+        width: 55px;
+        display: inline-block;
+    }
+    .past-data .sign-▲, .past-data .sign-▼ { position: relative; }
+    .past-data .sign-▲ { color: #3EF481; }
+    .past-data .sign-▼ { color: #F43E3E; }
+    .past-data .sign-▲:after, .past-data .sign-▼:after {
+      content: '\25A0';
+      position: absolute;
+      left: 4px;
+      bottom: -8px;
+      font-size: 10px;
+    }
+    .past-data .sign-▼:after {
+        bottom: auto;
+        top:-10px;
+    }
+    #map {
+      float: left;
+    }
+    #loading-mask {
+        background-color: rgba(255, 255, 255, 0.4);
+    }
+    #loading-mask .loader {
+        background: #FFF;
+        color: #EC008C;
+        border-color: #FFD400;
+        top: 0;
+        bottom: 0;
+        height: 58px;
+        margin: auto 0 auto -105px;
+    }
+    #loading-mask .loader:before {
+        content: url(/skin/adminhtml/default/default/images/twinlogo.png);
+        -webkit-animation: spinit 4s linear 0s infinite alternate;
+           -moz-animation: spinit 4s linear 0s infinite alternate;
+                animation: spinit 4s linear 0s infinite alternate;
+    }
+    #loading-mask .loader img { display: none; }
+    @-webkit-keyframes spinit { from { transform: rotate(360deg); } to { transform: rotate(0deg); }  }
+       @-moz-keyframes spinit { from { transform: rotate(360deg); } to { transform: rotate(0deg); }  }
+            @keyframes spinit { from { transform: rotate(360deg); } to { transform: rotate(0deg); }  }
+</style>
+
+ <!--Load the AJAX Google Chart API-->
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+//<![CDATA[
+var refreshRate = 300000;
+
+function updateBlocks() {
+    // Set our controller
+    var ajaxBlockUrl = '<?php echo $this->getUrl("twindash/ajax/ajaxBlockUpdate") ?>';
+    // Get the ids of all our blocks
+    var idsToUpdate = '';
+    var $blocks = $$('.entry-edit');
+    $blocks.each(function(item, index) {
+        idsToUpdate += item.readAttribute('id');
+        if (index !== $blocks.length - 1) idsToUpdate += ',';
+    });
+    // Get the filter data
+    var datesToUpdate = $('period').value + ',' + $('type').value + ',' + $('date').value;
+
+    // Ids we want to show growth instead of descrete values
+    var showGrowth = ['Admins', 'Products', 'Orders', 'Customers'];
+
+    // Send ajax request to controller
+    new Ajax.Request(ajaxBlockUrl, {
+        parameters: {isAjax: 'true', ids: idsToUpdate, dates: datesToUpdate, form_key: FORM_KEY},
+        onSuccess: function(transport) {
+            if (transport.responseText.isJSON()) {
+                var response = transport.responseText.evalJSON();
+                if (response.error) {
+                    console.log(response.message);
+                }
+                else {
+                    for (i in response) {
+                        var lifetime = response[i].kpiValue.shift();
+                        var $block   = $(response[i].kpiName);
+
+                        if (response[i].kpiName !== 'Locations') {
+                            // Go to each block and update the lifetime number
+                            $block.down('.main-kpi').update(lifetime[1]);
+                            // Add past data in list
+                            $dataBox = $block.down('.past-data');
+                            // Clear current data
+                            $dataBox.update('');
+                            // Set date format options
+                            var dataDateOptions = { year: 'numeric', month: 'short', day: 'numeric' };
+
+                            // Modify values for growth metrics
+                            if (showGrowth.indexOf(response[i].kpiName) !== -1) {
+                                for (var j = response[i].kpiValue.length - 1; j >= 1; --j) {
+                                    currentValue = response[i].kpiValue[j][1];
+                                    nextValue = response[i].kpiValue[j - 1][1];
+                                    response[i].kpiValue[j - 1][1] = currentValue + nextValue;
+                                }
+                            }
+
+                            // Calculate values
+                            response[i].kpiValue.each(function(item, index) {
+
+                                // Determain change from last point
+                                var currentPoint = typeof(item[1]) === 'string' ? parseFloat(item[1].substring(1)) : item[1];
+                                var prevPoint = response[i].kpiValue[index + 1];
+                                if (prevPoint !== undefined) prevPoint = prevPoint[1];
+                                prevPoint = typeof(prevPoint) === 'string' ? parseFloat(prevPoint.substring(1)) : prevPoint;
+                                var sign = currentPoint > prevPoint ? '&#9650;' : currentPoint < prevPoint ? '&#9660;' : '&mdash;';
+
+                                // Format date
+                                var dataDate = new Date(item[0]);
+                                dataDate = dataDate.toLocaleString('en-US', dataDateOptions);
+
+                                // Create data html
+                                var details = '<li><span class="date">' + dataDate + '</span>';
+                                details    += '<span class="ammount">' + item[1] + '</span>';
+                                details    += '<span class="sign-' + sign + '">'+ sign + '</span></li>';
+                                $dataBox.insert(details);
+                            });
+                            var dataHeight = $dataBox.getHeight();
+                            // Add past data in chart
+                            drawChart(response[i].kpiValue, $block.down('.chart'), dataHeight);
+                        }
+                        else { // Special processing for heat map
+                            $dataBox = $block.down('.past-data');
+
+                            var counts = [];
+                            for (var i = 0; i < lifetime[1].length; i++) {
+                                counts[lifetime[1][i]] = (counts[lifetime[1][i]] + 1) || 1;
+                            }
+
+                            var mapData = [['City', 'Customers']];
+                            $dataBox.update('');
+                            for (var index in counts) {
+                                if (counts.hasOwnProperty(index)) {
+                                    // Create data html
+                                    var details = '<li><span class="date">' + index + '</span>';
+                                    details    += '<span class="ammount">' + counts[index] + '</span>';
+                                    $dataBox.insert(details);
+
+                                    mapData.push([index, counts[index]]);
+                                }
+                            }
+                            // Add heat map
+                            drawMap(mapData);
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Load the Visualization API and the piechart package.
+google.load('visualization', '1.0', {'packages': ['corechart', 'geomap']});
+
+function drawChart(rowData, block, dataHeight) {
+    var data = new google.visualization.DataTable();
+    data.addColumn('date', 'Period');
+    data.addColumn('number', 'Value');
+
+    var rows = [];
+    for (var i = 0; i < rowData.length; i++) {
+        var date = new Date(rowData[i][0]);
+        var ammount = rowData[i][1];
+
+        if (typeof(ammount) === 'string') {
+            ammount = parseFloat(ammount.substring(1));
+            ammount = {v: ammount, f: '$' + ammount};
+        }
+
+        rows.push([date, ammount]);
+    }
+    data.addRows(rows);
+
+    var options = {
+        width: 300,
+        height: dataHeight,
+        legend: {position: 'none'},
+        vAxis: {
+            gridlines: { color: 'transparent' },
+            baselineColor: '#fff',
+            gridlineColor: '#fff',
+            textPosition: 'none'
+        },
+        hAxis: {
+            gridlines: { color: 'transparent' },
+            baselineColor: '#fff',
+            gridlineColor: '#fff',
+            textPosition: 'none'
+        },
+        series: { 0: { color: '#3ED6F4' } },
+        chartArea: {'width': '100%', 'height': '100%'}
+    };
+
+    var chart = new google.visualization.AreaChart(block);
+    chart.draw(data, options);
+}
+
+// Draw heat map
+function drawMap(data) {
+    var data = google.visualization.arrayToDataTable(data);
+
+    var options = {};
+    options['dataMode'] = 'regions';
+
+    var chartDiv = $('Locations').down('.entry-edit-body').insert('<div id="map"></div>');
+    var geoMap = new google.visualization.GeoMap($('map'));
+
+    geoMap.draw(data, options);
+}
+
+document.observe('dom:loaded', function() {
+    // Update the blocks with default values when the Google Visualization API is loaded.
+    google.setOnLoadCallback(updateBlocks);
+
+    // Watch for changes to the filters
+    $('period').observe('change', function(event) {
+        $$('[data-update="period"]')[0].update(this.value);
+    });
+    $('type').observe('change', function(event) {
+        $$('[data-update="type"]')[0].update(this.value + 's');
+    });
+    $('date').observe('change', function(event) {
+        var dateOptions = { year: 'numeric', month: 'short', day: 'numeric' };
+        var date = new Date(this.value);
+        $$('[data-update="date"]')[0].update(' from ' + date.toLocaleString('en-US', dateOptions));
+    });
+
+    // Manual update button
+    $('refresh').observe('click', function(event) {
+        updateBlocks();
+    });
+
+    // Auto refresh
+    var timerId = setInterval(updateBlocks, refreshRate);
+});
+
+//]]>
+</script>
+
+<div class="dashboard-container">
+    <div class="filters">
+        <div class="filter">
+            <h2>
+                <span>Last <span data-update="period">3</span> <span data-update="type">days</span>
+                <span data-update="date"></span>
+                <label>Period
+                    <input id="period" type="number" value="3" min="1">
+                </label>
+                <label>Type
+                    <select id="type">
+                        <option value="day">Days</option>
+                        <option value="week">Weeks</option>
+                        <option value="month">Months</option>
+                        <option value="year">Years</option>
+                    </select>
+                </label>
+                <label>End Date
+                    <?php
+                        $setDate = new DateTime('tomorrow');
+                        $setDate = $setDate->format('Y-m-d');
+                    ?>
+                    <input id="date" type="date" value="<?php echo $setDate; ?>" max="<?php echo $setDate; ?>">
+                </label>
+            </h2>
+            <button id="refresh" class="refresh"><span>&#8634;</span></button>
+        </div>
+    </div>
+    <div class="col-2">
+        <?php echo $this->getChildHtml('sales') ?>
+        <?php echo $this->getChildHtml('orders') ?>
+    </div>
+    <div class="col-2">
+        <?php echo $this->getChildHtml('customers') ?>
+        <?php echo $this->getChildHtml('products') ?>
+        <?php echo $this->getChildHtml('admins') ?>
+    </div>
+</div>
