@@ -29,7 +29,6 @@ class Twindom_Twindash_Model_Updater extends Twindom_Twindash_Block_Dashboard_Bo
     }
 
     // Update admins
-    // There is a bug here where admin count inflated by the total number of admins
     protected function updateAdmins($dates)
     {
         $adminUsersCount = array();
@@ -63,7 +62,7 @@ class Twindom_Twindash_Model_Updater extends Twindom_Twindash_Block_Dashboard_Bo
     }
 
     // Update cutomers TODO: All the below update functions hit the db for each date, proably better to sort dates
-    // after first hit.
+    // after first hit like in the updateAdmins function.
     protected function updateCustomers($dates)
     {   
         $customerCount = array();
@@ -156,6 +155,7 @@ class Twindom_Twindash_Model_Updater extends Twindom_Twindash_Block_Dashboard_Bo
 
             $orderStats = $this->getOrderData($date);
 
+            // TODO add some way of veiwing this pipline information
             foreach ($orderStats as $orderStat) {
                 if ($orderStat->status == 'canceled') {
                  $orderCanceledCount++;
@@ -180,13 +180,16 @@ class Twindom_Twindash_Model_Updater extends Twindom_Twindash_Block_Dashboard_Bo
     {   
         $locationsData = array();
 
+        // TODO add a filter for dates here. Proably getting the whole range from ealiest to latest,
+        // and removing the outer foreach loop.
         foreach($dates as $date) {
             $location = array();
             $orderStats = $this->getOrderData($date);
             foreach ($orderStats as $orderStat) {
                 $address = $orderStat->getShippingAddress();
                 if (is_object($address)) {
-                    $location[] = $orderStat->getShippingAddress()->getData()['country_id'];
+                    $shippingData = $orderStat->getShippingAddress()->getData();
+                    $location[] = $shippingData['country_id'];
                 }
             }
            
@@ -296,7 +299,7 @@ class Twindom_Twindash_Model_Updater extends Twindom_Twindash_Block_Dashboard_Bo
     {
         $orderCollection = Mage::getModel('sales/order')
             ->getCollection()
-            //->addFieldToSelect(array('entity_id', 'customer_id', 'status', 'total_item_count', 'total_qty_ordered'))
+            ->addFieldToSelect(array('entity_id', 'customer_id', 'status', 'total_item_count', 'total_qty_ordered'))
             ->addAttributeToFilter('created_at', array('from'=>$date['start'], 'to'=>$date['end']));
 
         return $orderCollection;
@@ -307,6 +310,7 @@ class Twindom_Twindash_Model_Updater extends Twindom_Twindash_Block_Dashboard_Bo
         $productCollection = Mage::getModel('catalog/product')
             ->getCollection()
             ->addAttributeToSelect('status')
+            // Only get active products
             ->addFieldToFilter('status', Mage_Catalog_Model_Product_Status::STATUS_ENABLED)
             ->addAttributeToFilter('created_at', array('from'=>$date['start'], 'to'=>$date['end']));
 

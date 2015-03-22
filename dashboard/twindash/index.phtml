@@ -180,6 +180,7 @@
         bottom: auto;
         top:-10px;
     }
+    .past-data .change { margin-left: 5px; }
     #map {
       float: left;
     }
@@ -265,12 +266,23 @@ function updateBlocks() {
                             // Calculate values
                             response[i].kpiValue.each(function(item, index) {
 
-                                // Determain change from last point
+                                // Change from last point
+                                // Account for currency numbers
                                 var currentPoint = typeof(item[1]) === 'string' ? parseFloat(item[1].substring(1)) : item[1];
                                 var prevPoint = response[i].kpiValue[index + 1];
                                 if (prevPoint !== undefined) prevPoint = prevPoint[1];
+                                // Account for currency numbers
                                 prevPoint = typeof(prevPoint) === 'string' ? parseFloat(prevPoint.substring(1)) : prevPoint;
-                                var sign = currentPoint > prevPoint ? '&#9650;' : currentPoint < prevPoint ? '&#9660;' : '&mdash;';
+                                // Calculate change from last period
+                                var percentChange = ((currentPoint - prevPoint) / currentPoint) * 100;
+                                var sign = percentChange > 0 ? '&#9650;' : percentChange < 0 ? '&#9660;' : '&mdash;';
+                                // Format change
+                                if (isFinite(percentChange)) {
+                                    if (percentChange < 1 && percentChange > 0) percentChange = '<1';
+                                    else if (percentChange > -1 && percentChange < 0) percentChange = '>-1';
+                                    percentChange = Math.round(percentChange) + '%';
+                                }
+                                else { percentChange = '' }
 
                                 // Format date
                                 var dataDate = new Date(item[0]);
@@ -279,7 +291,8 @@ function updateBlocks() {
                                 // Create data html
                                 var details = '<li><span class="date">' + dataDate + '</span>';
                                 details    += '<span class="ammount">' + item[1] + '</span>';
-                                details    += '<span class="sign-' + sign + '">'+ sign + '</span></li>';
+                                details    += '<span class="sign-' + sign + '">'+ sign + '</span>';
+                                details    += '<span class="change">'+ percentChange + '</span></li>';
                                 $dataBox.insert(details);
                             });
                             var dataHeight = $dataBox.getHeight();
